@@ -1,0 +1,45 @@
+---
+- hosts: assign
+  ignore_errors: true
+  vars_files:
+    - var-file.yml
+
+  tasks:
+    - name: "Checking if Wordpress is Already installed..."
+      stat:
+        path: "{{ base_dir }}/wordpress"
+      register: wp_installed
+
+    - name: "Checking if the Wordpress Tar File is already Exist."
+      stat:
+        path: "{{ base_dir }}/{{ wp_tar_file }}"
+      register: wp_file
+      #when: not wp_installed.stat.exists
+
+    - name: "Report if Wordpress Tar file exist."
+      debug:
+        msg: "file: latest.tar.gz already exist"
+      when: wp_file.stat.exists
+
+    - name: "Downloading Wordpress Tar File..."
+      get_url:
+        url: "http://wordpress.org/latest.tar.gz"
+        dest: "{{ base_dir }}"
+      register: wp_download
+      when: not wp_file.stat.exists and not wp_installed.stat.exists
+
+
+    - name: "Unarchiving Wordpress ..."
+      unarchive:
+        src: "{{ base_dir }}/{{ wp_tar_file }}"
+        dest: "{{ base_dir }}"
+        remote_src: yes
+      register: result
+      when: not wp_installed.stat.exists #and not wp_file.stat.exists
+
+    - name: "Deleting Tar file ..."
+      file:
+        path: "{{ base_dir }}/{{ wp_tar_file }}"
+        state: absent
+      when: wp_file.stat.exists or result is succeeded
+

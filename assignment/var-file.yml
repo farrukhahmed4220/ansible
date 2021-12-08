@@ -1,0 +1,10 @@
+---
+#Base directory where Tar File downloads and Extracts
+base_dir: /home/vagrant
+
+# Name of the tar file  
+wp_tar_file: wordpress-5.8.2.tar.gz
+
+# Environment Variable to disable warnings
+ANSIBLE_ACTION_WARNINGS: false
+

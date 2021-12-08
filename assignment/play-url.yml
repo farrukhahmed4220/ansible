@@ -1,0 +1,15 @@
+---
+- hosts: all
+  ignore_errors: true
+  
+  vars:
+    - ANSIBLE_ACTION_WARNINGS: false
+  
+  tasks:  
+    - name: "Downloading Wordpress Tar And Unarchiving To A Path '/home/vagrant/wordpress' ..."
+      unarchive:
+        src:    http://wordpress.org/latest.tar.gz
+          #create: /home/vagrant/wordpress
+        dest:   /home/vagrant/
+        remote_src: yes
+ 
